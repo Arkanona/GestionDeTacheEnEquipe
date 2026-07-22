@@ -1,10 +1,7 @@
 const express = require('express')
-const route = express.Router()
+const router = express.Router()
+const { profile } = require('../controllers/userController')
 
-Router.get('/', (req, res) => {
-    res.json([
-        {
-            
-        }
-    ])
-})
+router.get('/profile', profile)
+
+module.exports = router
