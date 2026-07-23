@@ -8,6 +8,17 @@ const profile = async (req, res) => {
     }
 }
 
+const checkRole = async (req, res) => {
+    try {
+        if(!req.user || req.user.role !== member ){
+            return res.status(403).jon({ message: 'Accès refusé : role insuffisant'})
+        }
+    } catch (err) {
+        return res.status(500).json({ message: 'Vous ne participer à aucun projet'})
+    }
+}
+
 module.exports = {
-    profile
+    profile,
+    checkRole
 }

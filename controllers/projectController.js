@@ -1,5 +1,6 @@
 const Project = require('../models/projectModel')
 const { formatDate } = require('../helpers/formatDate')
+const checkRole = require('./userController')
 
 
 
@@ -27,7 +28,7 @@ exports.updateProject = async (req, res) => {
         const { collaborator } = req.body
         const project = await Project.findById(req.params.id)
         if(project == null){
-            return res.status(404).json({message: 'Produit non trouvée'})
+            return res.status(404).json({message: 'Project not found'})
         }
 
         const existingUser = await Project.findOne({ collaborator })
