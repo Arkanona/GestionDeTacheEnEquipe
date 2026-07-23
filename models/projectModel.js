@@ -13,11 +13,11 @@ const projectSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    author: {
+    author: {           // For US4
         type: String,
         required: true
     },
-    collaborator: {
+    collaborator: {     // For US4
         type: Array
     }
 })
