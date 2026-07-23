@@ -8,6 +8,10 @@ const projectSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true
+    },
+    creationDate: {
+        type: Date,
+        default: Date.now
     }
 })
 

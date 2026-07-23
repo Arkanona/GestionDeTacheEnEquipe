@@ -6,4 +6,4 @@ mongoose.connect(dbURI)
     .then(() => console.log('Connecter avec succès à MongoDB !'))
     .catch(err => console.error('Erreur de connexion à MongoDB tdc :', err))
 
-    module.exports = mongoose.connection
+module.exports = mongoose.connection
