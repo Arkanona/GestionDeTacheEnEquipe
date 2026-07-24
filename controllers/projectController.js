@@ -31,14 +31,17 @@ exports.updateProject = async (req, res) => {
             return res.status(404).json({message: 'Project not found'})
         }
 
-        const existingUser = await Project.findOne({ collaborator })
-        if(existingUser){
-            return res.status(400).json({ message: 'Email already added'})
-        }
+        const email = req.body.email
 
-        if (req.body.collaborator != null){
-            project.collaborator.push(req.body.collaborator) 
+        if(email == null){
+            return res.status(400).json({ message: 'c pas bon'})
         }
+        // Verifier si le collaborator est déja présent
+        if(project.collaborator.includes(email)){
+            return res.status(400).json({ message: 'Collaborator already exists'})
+        }
+   
+        project.collaborator.push(email) 
 
         const updateProject = await project.save()
         res.json(updateProject)
