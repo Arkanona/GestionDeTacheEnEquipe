@@ -5,6 +5,6 @@ const authMiddleware = require('../middleware/authMiddleware')
 const verifyUserMiddleware = require('../middleware/verifyUserMiddleware')
 
 router.get('/profile',authMiddleware, profile)
-router.get('/:id', authMiddleware, verifyUserMiddleware)
+router.get('/:id', authMiddleware, checkRole)
 
 module.exports = router

@@ -1,6 +1,10 @@
 const express = require('express')
 const app = express()
 const port = 3001
+const cors = require('cors')
+const helmet = require('helmet')
+const rateLimit = require('express-rate-limit')
+
 
 require('dotenv').config()
 require('./config/db')
@@ -8,7 +12,26 @@ require('./config/db')
 const userRoutes = require('./routes/usersRoutes')
 const authRoutes = require('./routes/authRoutes')
 const projectRoutes = require('./routes/projectsRoutes')
+const { crossOriginResourcePolicy } = require('helmet')
 
+const corsOption = {
+    origin: 'http://localhost:3001'
+}
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    message: { status: 429, error: 'Too many request'}
+})
+
+app.use(
+    helmet({
+        contentSecurityPolicy: false,
+        crossOriginResourcePolicy: { policy: "cross-origin" }
+    })
+)
+
+app.use(cors(corsOption))
+app.use(limiter)
 app.use(express.json())
 
 app.use('/api/v1/users', userRoutes)

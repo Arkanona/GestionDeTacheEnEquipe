@@ -5,6 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 
 
 router.post('/',authMiddleware, projectController.createProject)
-router.patch('/:id', authMiddleware, projectController.updateProject)
+router.patch('/invite/:id', authMiddleware, projectController.updateProject)
+router.get('/', authMiddleware, projectController.getAllProjects)
 
 module.exports = router

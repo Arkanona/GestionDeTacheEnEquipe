@@ -18,7 +18,8 @@ const projectSchema = new mongoose.Schema({
         required: true
     },
     collaborator: {     // For US4
-        type: Array
+        type: Array,
+        default: []
     }
 })
 

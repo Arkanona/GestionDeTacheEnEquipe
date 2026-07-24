@@ -9,7 +9,7 @@ exports.createProject = async (req, res) => {
         const project = new Project({
             title: req.body.title,
             description: req.body.description,
-            author: req.user.id,
+            author: req.user._id,
             creationDate: req.body.creationDate
         })
 
@@ -18,7 +18,7 @@ exports.createProject = async (req, res) => {
         objProject.creationDate = formatDate(newProject.creationDate)
         res.status(201).json(objProject)
     } catch (err) {
-        res.status(400).json({ message: err.message })
+        res.status(500).json({ message: err.message })
     }
 }
 
@@ -33,19 +33,48 @@ exports.updateProject = async (req, res) => {
 
         const email = req.body.email
 
+        if(!email){
+            return res.status(400).json({ message: 'Invalid Email'})
+        }
+
         if(email == null){
             return res.status(400).json({ message: 'c pas bon'})
+        }
+        // Seulement le créateur peut inviter
+        if(project.creator.toString() !== req.user._id.toString()){
+            return res.status(400).json({ message: 'Only author can send invite'})
         }
         // Verifier si le collaborator est déja présent
         if(project.collaborator.includes(email)){
             return res.status(400).json({ message: 'Collaborator already exists'})
         }
+        const collaboratorInfos = await User.findOne({ email })
+        if(!collaboratorInfos){
+            return res.status(404).json({ message: 'User not found '})
+        }
    
         project.collaborator.push(email) 
 
         const updateProject = await project.save()
-        res.json(updateProject)
+        res.status(200).json(updateProject)
     } catch (err) {
         res.status(400).json({ message: err.message})
+    }
+}
+
+exports.getAllProjects = async (req, res) => {
+    try {
+        // Récupérer tout les projets
+        const project = await Project.find({
+            $or: [
+                { author: req.user._id },
+                { collaborator: req.user._id }
+            ]
+        })
+
+        // Récupérer tout les projets ou je suis collaborateur
+        res.status(200).json(project || [])
+    } catch (err){
+
     }
 }
