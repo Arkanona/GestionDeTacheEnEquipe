@@ -1,6 +1,8 @@
 const Project = require('../models/projectModel')
 const { formatDate } = require('../helpers/formatDate')
 const checkRole = require('./userController')
+const Task = require('../models/taskModel')
+const User = require('../models/userModel')
 
 
 
@@ -58,7 +60,7 @@ exports.updateProject = async (req, res) => {
         const updateProject = await project.save()
         res.status(200).json(updateProject)
     } catch (err) {
-        res.status(400).json({ message: err.message})
+        res.status(500).json({ message: err.message})
     }
 }
 
@@ -75,6 +77,29 @@ exports.getAllProjects = async (req, res) => {
         // Récupérer tout les projets ou je suis collaborateur
         res.status(200).json(project || [])
     } catch (err){
+        res.status(500).json({ message: err.message})
+    }
+}
 
+exports.createTask = async (req, res) => {
+    try {
+        const { title, taskStatus } = req.body
+        const idProject = req.params.id
+
+        if(!title){
+            res.status(400).json({ error: 'You must provide title'})
+        }
+        if(!idProject){
+            return res.status(404).json({ message: "Invalid project"})
+        }
+        
+        const task = new Task({
+            title,
+            taskStatus
+        })
+
+
+    } catch (err) {
+        res.status(500).json({ message: err.message})
     }
 }
