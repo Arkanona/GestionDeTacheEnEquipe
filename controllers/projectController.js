@@ -5,7 +5,7 @@ const Task = require('../models/taskModel')
 const User = require('../models/userModel')
 
 
-
+// US3
 exports.createProject = async (req, res) => {
     try {
         const project = new Project({
@@ -27,7 +27,7 @@ exports.createProject = async (req, res) => {
 // US4
 exports.updateProject = async (req, res) => {
     try {
-        const { collaborator } = req.body
+        const collaborator = req.body
         const project = await Project.findById(req.params.id)
         if(project == null){
             return res.status(404).json({message: 'Project not found'})
@@ -43,7 +43,7 @@ exports.updateProject = async (req, res) => {
             return res.status(400).json({ message: 'c pas bon'})
         }
         // Seulement le créateur peut inviter
-        if(project.creator.toString() !== req.user._id.toString()){
+        if(project.author.toString() !== req.user._id.toString()){
             return res.status(400).json({ message: 'Only author can send invite'})
         }
         // Verifier si le collaborator est déja présent
@@ -64,6 +64,7 @@ exports.updateProject = async (req, res) => {
     }
 }
 
+// US5
 exports.getAllProjects = async (req, res) => {
     try {
         // Récupérer tout les projets
@@ -81,6 +82,7 @@ exports.getAllProjects = async (req, res) => {
     }
 }
 
+// US6
 exports.createTask = async (req, res) => {
     try {
         const { title, taskStatus } = req.body
@@ -93,13 +95,50 @@ exports.createTask = async (req, res) => {
             return res.status(404).json({ message: "Invalid project"})
         }
         
+
         const task = new Task({
-            title,
-            taskStatus
+            title: req.body.title,
+            taskStatus: req.body.taskStatus
         })
 
+        const newTask = await task.save()
+        const objTask = newTask.toObject()
+
+        res.status(201).json(objTask)
 
     } catch (err) {
+        res.status(500).json({ message: err.message})
+    }
+}
+
+//US7
+// exports.assignTask = async (req, res) => {
+//     try{
+        
+//     } catch(err) {
+//         res.status(500).json({ message: err.message})
+//     }
+// }
+
+// US8
+exports.updateStatus = async (req, res) => {
+    try{
+
+        const idTask = req.params.id
+
+        if(!idTask){
+            return res.status(404).json({ message: "Invalid task"})
+        }
+
+        const task = new Task({
+            taskStatus: req.body.taskStatus
+        })
+
+        const updateTask = await task.save()
+        const objTask = updateTask.toObject()
+
+        res.status(201).json(objTask)
+    } catch(err) {
         res.status(500).json({ message: err.message})
     }
 }

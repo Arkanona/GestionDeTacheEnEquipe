@@ -3,7 +3,7 @@ const User = require('../models/userModel')
 const validator = require('validator')
 
 const JWT_SECRET = process.env.JWT_SECRET
-const JWT_EXPIRES_IN = '7d'
+const JWT_EXPIRES_IN = '365d'
 
 
 const generateToken = (id) => {
