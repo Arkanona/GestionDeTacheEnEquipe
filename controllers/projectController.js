@@ -112,33 +112,70 @@ exports.createTask = async (req, res) => {
 }
 
 //US7
-// exports.assignTask = async (req, res) => {
-//     try{
-        
-//     } catch(err) {
-//         res.status(500).json({ message: err.message})
-//     }
-// }
+exports.assignTask = async (req, res) => {
+    try{
+        const helper = req.body.helper
+        const idTask = req.params.id
+        const task = await Task.findById(req.params.id)
+
+        if(!idTask && task == null){
+            return res.status(404).json({ message: "Invalid task"})
+        }
+
+        const email = req.body.email
+
+        if(!email){
+            return res.status(400).json({ message: 'Invalid Email'})
+        }
+        if(task.helper.includes(email)){
+            return res.status(400).json({ message: 'Helper already exists'})
+        }
+        const helperInfos = await User.findOne({ email })
+        if(!helperInfos){
+            return res.status(404).json({ message: 'User not found '})
+        }
+
+        task.helper.push(email)
+
+        const updateHelper = await task.save()
+        res.status(200).json(updateHelper)
+
+        console.log(updateHelper)
+    } catch(err) {
+        res.status(500).json({ message: err.message})
+    }
+}
 
 // US8
 exports.updateStatus = async (req, res) => {
     try{
 
         const idTask = req.params.id
+        const task = await Task.findById(req.params.id)
+        const taskStatus = req.body.taskStatus
 
-        if(!idTask){
+        // sécurité sur la récup de la tâche
+
+        if(!idTask && task == null){
             return res.status(404).json({ message: "Invalid task"})
         }
 
-        const task = new Task({
-            taskStatus: req.body.taskStatus
-        })
+        if(taskStatus != null){
+            task.taskStatus = taskStatus
+        }
 
         const updateTask = await task.save()
-        const objTask = updateTask.toObject()
-
-        res.status(201).json(objTask)
+        res.status(200).json(updateTask)
     } catch(err) {
         res.status(500).json({ message: err.message})
+    }
+}
+
+//US9
+exports.filterTask = async (req, res) => {
+    try{
+
+    } catch(err){
+        
     }
 }

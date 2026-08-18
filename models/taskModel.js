@@ -12,6 +12,10 @@ const taskSchema = new mongoose.Schema({
         type: String,
         enum: ['To-do', 'In progress', 'Finished'],
         default: 'To-do'
+    },
+    helper:{            // US7
+        type: Array,
+        default: []
     }
 })
 
