@@ -12,6 +12,8 @@ require('./config/db')
 const userRoutes = require('./routes/usersRoutes')
 const authRoutes = require('./routes/authRoutes')
 const projectRoutes = require('./routes/projectsRoutes')
+const taskRoutes = require('./routes/taskRoutes')
+
 const { crossOriginResourcePolicy } = require('helmet')
 
 const corsOption = {
@@ -37,6 +39,7 @@ app.use(express.json())
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/projects', projectRoutes)
+app.use('/api/v1/task', taskRoutes)
 
 app.get('/', (req, res) => {
     res.send('Gestion de Tâches en Équipe')

@@ -1,6 +1,5 @@
 const Project = require('../models/projectModel')
 const { formatDate } = require('../helpers/formatDate')
-const checkRole = require('./userController')
 const Task = require('../models/taskModel')
 const User = require('../models/userModel')
 
@@ -83,121 +82,117 @@ exports.getAllProjects = async (req, res) => {
 }
 
 // US6
-exports.createTask = async (req, res) => {
-    try {
-        const { title, taskStatus } = req.body
-        const idProject = req.params.id
+// exports.createTask = async (req, res) => {
+//     try {
+//         const { title, taskStatus } = req.body
+//         const idProject = req.params.id
 
-        if(!title){
-            res.status(400).json({ error: 'You must provide title'})
-        }
-        if(!idProject){
-            return res.status(404).json({ message: "Invalid project"})
-        }
+//         if(!title){
+//             res.status(400).json({ error: 'You must provide title'})
+//         }
+//         if(!idProject){
+//             return res.status(404).json({ message: "Invalid project"})
+//         }
         
 
-        const task = new Task({
-            title: req.body.title,
-            taskStatus: req.body.taskStatus
-        })
+//         const task = new Task({
+//             title: req.body.title,
+//             taskStatus: req.body.taskStatus
+//         })
 
-        const newTask = await task.save()
-        const objTask = newTask.toObject()
+//         const newTask = await task.save()
+//         const objTask = newTask.toObject()
 
-        res.status(201).json(objTask)
+//         res.status(201).json(objTask)
 
-    } catch (err) {
-        res.status(500).json({ message: err.message})
-    }
-}
+//     } catch (err) {
+//         res.status(500).json({ message: err.message})
+//     }
+// }
 
 //US7
-exports.assignTask = async (req, res) => {
-    try{
-        const helper = req.body.helper
-        const idTask = req.params.id
-        const task = await Task.findById(req.params.id)
+// exports.assignTask = async (req, res) => {
+//     try{
+//         const helper = req.body.helper
+//         const idTask = req.params.id
+//         const task = await Task.findById(req.params.id)
 
-        if(!idTask && task == null){
-            return res.status(404).json({ message: "Invalid task"})
-        }
+//         if(!idTask && task == null){
+//             return res.status(404).json({ message: "Invalid task"})
+//         }
 
-        const email = req.body.email
+//         const email = req.body.email
 
-        if(!email){
-            return res.status(400).json({ message: 'Invalid Email'})
-        }
-        if(task.helper.includes(email)){
-            return res.status(400).json({ message: 'Helper already exists'})
-        }
-        const helperInfos = await User.findOne({ email })
-        if(!helperInfos){
-            return res.status(404).json({ message: 'User not found '})
-        }
+//         if(!email){
+//             return res.status(400).json({ message: 'Invalid Email'})
+//         }
+//         if(task.helper.includes(email)){
+//             return res.status(400).json({ message: 'Helper already exists'})
+//         }
+//         const helperInfos = await User.findOne({ email })
+//         if(!helperInfos){
+//             return res.status(404).json({ message: 'User not found '})
+//         }
 
-        task.helper.push(email)
+//         task.helper.push(email)
 
-        const updateHelper = await task.save()
-        res.status(200).json(updateHelper)
+//         const updateHelper = await task.save()
+//         res.status(200).json(updateHelper)
 
-        console.log(updateHelper)
-    } catch(err) {
-        res.status(500).json({ message: err.message})
-    }
-}
+//         console.log(updateHelper)
+//     } catch(err) {
+//         res.status(500).json({ message: err.message})
+//     }
+// }
 
 // US8
-exports.updateStatus = async (req, res) => {
-    try{
+// exports.updateStatus = async (req, res) => {
+//     try{
 
-        const idTask = req.params.id
-        const task = await Task.findById(req.params.id)
-        const taskStatus = req.body.taskStatus
+//         const idTask = req.params.id
+//         const task = await Task.findById(req.params.id)
+//         const taskStatus = req.body.taskStatus
 
-        // sécurité sur la récup de la tâche
+//         // sécurité sur la récup de la tâche
 
-        if(!idTask && task == null){
-            return res.status(404).json({ message: "Invalid task"})
-        }
+//         if(!idTask && task == null){
+//             return res.status(404).json({ message: "Invalid task"})
+//         }
 
-        if(taskStatus != null){
-            task.taskStatus = taskStatus
-        }
+//         if(taskStatus != null){
+//             task.taskStatus = taskStatus
+//         }
 
-        const updateTask = await task.save()
-        res.status(200).json(updateTask)
-    } catch(err) {
-        res.status(500).json({ message: err.message})
-    }
-}
+//         const updateTask = await task.save()
+//         res.status(200).json(updateTask)
+//     } catch(err) {
+//         res.status(500).json({ message: err.message})
+//     }
+// }
 
 //US9
-exports.filterTask = async (req, res) => {
-    try{
+// exports.filterTask = async (req, res) => {
+//     try{
 
-        const idProject = req.params.id
-        const project = await Project.findById(req.params.id)
-        const email = req.body.email
+//         const idTask = req.params.id
+//         const task = await Task.findById(req.params.id)
+//         const email = req.body.email
 
-        if(!idProject && project == null){
-            return res.status(404).json({ message: "Invalid project"})
-        }
+//         if(!idTask && task == null){
+//             return res.status(404).json({ message: "Invalid project"})
+//         }
 
-        const paramFilter = req.body.paramFilter
+//         const paramFilter = req.body.paramFilter
 
-        const taskFilter = await Task.find({
-            $or: [
-                { helper: paramFilter },
-                { taskStatus: paramFilter }
-            ]
-        })
+//         const taskFilter = await Task.find({
+//             $or: [
+//                 { helper: paramFilter },
+//                 { taskStatus: paramFilter }
+//             ]
+//         })
 
-        // if(!email || !taskFilter){
-        //     return res.status(404).json({ message: "Invalid "})
-        // }
-
-        res.status(200).json(taskFilter)
-    } catch(err){
-        res.status(500).json({ message: err.message})
-    }
-}
+//         res.status(200).json(taskFilter)
+//     } catch(err){
+//         res.status(500).json({ message: err.message})
+//     }
+// }
