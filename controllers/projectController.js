@@ -175,7 +175,29 @@ exports.updateStatus = async (req, res) => {
 exports.filterTask = async (req, res) => {
     try{
 
+        const idProject = req.params.id
+        const project = await Project.findById(req.params.id)
+        const email = req.body.email
+
+        if(!idProject && project == null){
+            return res.status(404).json({ message: "Invalid project"})
+        }
+
+        const paramFilter = req.body.paramFilter
+
+        const taskFilter = await Task.find({
+            $or: [
+                { helper: paramFilter },
+                { taskStatus: paramFilter }
+            ]
+        })
+
+        // if(!email || !taskFilter){
+        //     return res.status(404).json({ message: "Invalid "})
+        // }
+
+        res.status(200).json(taskFilter)
     } catch(err){
-        
+        res.status(500).json({ message: err.message})
     }
 }
